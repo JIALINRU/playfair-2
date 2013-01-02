@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css">
+<link rel="stylesheet" type="text/css" href="css/playfair.css">
+<script language="javascript" src="js/jquery-1.8.3.min.js"></script>
+<script language="javascript" src="js/bootstrap.min.js"></script>
+<script language="javascript" src="js/playfair.js"></script>
+</head>
+<body>
+  </div>
+</div>
+<div class="row">
+<div class="span10 offset1">
+<h3>Playfair Tool</h3>
+<ul class="nav nav-tabs" id="tabs">
+  <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
+  <li><a href="#squaretab" data-toggle="tab">Square</a></li>
+  <li><a href="#help" data-toggle="tab">Help</a></li>
+</ul>
+<div class="tab-content">
+<div class="tab-pane active" id="home">
+<label for="inkey">Keyphrase:</label>
+<input placeholder="Type keyphrase..." type="text" name="inkey" id="inkey" size="10">
+<span class="help-block">This will change the cipher/decipher output, so have a secure way of negotiating this with the person with whom you're exchanging messages.</span>
+<label class="checkbox">
+  <input type="checkbox" name="dostop" id="dostop"> Convert &quot;<tt>.</tt>&quot; to &quot;<tt>STOP</tt>&quot;
+</label>
+<label class="checkbox">
+  <input type="checkbox" name="spellnumbers" id="spellnumbers"> Spell out digits
+</label>
+<label for="message">Message:</label>
+<textarea cols="80" rows="8" name="message" id="message" placeholder="Enter plaintext or ciphertext"></textarea>
+<input type="button" name="encrypt" id="encrypt" value="Encrypt">
+<input type="button" name="decrypt" id="decrypt" value="Decrypt">
+</div>
+
+<div class="tab-pane" id="squaretab">
+<table border="0" cellpadding="2" cellspacing="0">
+<tbody id="squareid">
+</tbody>
+</table>
+</div>
+
+<div class="tab-pane" id="help">
+<div id="helpbox">
+<h4>Overview</h4>
+The <a href="http://en.wikipedia.org/wiki/Playfair_cipher" target="_blank">Playfair cipher</a>
+is a pencil and paper cipher designed in 1854 by Charles Wheatstone but named
+after Lord Playfair who promoted its use.
+<h4>The Key</h4>
+<p>The key is a 5x5 Polybius square containing 25 of the 26 capital letters of the English
+alphabet. In this application, <tt>I</tt> and <tt>J</tt> are combined. In others,
+letters such as <tt>Q</tt> or </tt>X</tt> may be dropped. The order of the letters
+within the square is critical. If the person with whom you're exhanging the message
+doesn't have their square in the same order as you, then they will not be able to
+correctly exchange messages with you. The sequencing of the key is made more simple
+by using a Keyphrase.</p>
+<h4>The Keyphrase</h4>
+<p>The keyphrase is an alphabetic sequence (usually a word or set of words) which are used
+to change the order of the Polybius Square. You and the person with whom you are
+exchanging the message must have the same key to decipher the other's messages.
+Because the most sensitive part of the process is the key, you should keep the keyphrase
+secret and ensure a mechanism of rotating the keyphrase. A common method of rotating keys
+is to use a book which both of you have and a pre-arranged algorithm for finding
+the day's keyphrase within that book.</p>
+<p>If you wish to specify the full square rather than just a beginning keyphrase,
+simply enter all 25 letters of the key into the Keyphrase box</p>
+<h4>Encrypting</h4>
+<ul>
+  <li>Enter the keyphrase into the <em>Keyphrase</em> box</li>
+  <li>Enter the message you wish to encrypt into the <em>Message</em> box</li>
+  <li>Click the <em>Encrypt</em> button</li>
+  <li>The encrypted message appears in the <em>Message</em> box</li>
+</ul>
+<p>Remember that the alphabet for this is 25 upper-case letters. So everything that
+is not a letter is removed, and all letters are converted to upper-case. If you check
+the <em>Convert &quot;<tt>.</tt>&quot; to &quot;<tt>STOP</tt>&quot;</em> checkbox,
+all periods will be changed to the word &quot;STOP&quot; so that you at least get
+sentence endings in the result. Similarly, if you check <em>Spell out digits</em>,
+numbers will be spelled out digit-by-digit.</p>
+<h4>Decrypting</h4>
+<ul>
+  <li>Enter the keyphrase into the <em>Keyphrase</em> box</li>
+  <li>Enter the encrypted message into the <em>Message</em> box</li>
+  <li>Click the <em>Decrypt</em> button</li>
+  <li>The plaintext message appears in the <em>Message</em> box</li>
+</ul>
+<p><strong>&quot;The decrypted message isn't the same as I put it in.&quot;</strong> or
+<strong>&quot;I can't read the new decrypted message&quot;</strong></p>
+Remember, this is an alphabet of only 25 characters, and doesn't include punctuation.
+So the resulting plaintext will probably not be exactly the same as you originally
+entered. Here are some hints to get you started:
+<ul>
+  <li>You'll need to figure out where word boundaries are. When constructing your
+  plaintext message, help out the recipient by removing any ambiguity in the 
+  boundaries of the plaintext message. For example: &quot;<tt>TOPANDASYNCHRONOUS</tt>&quot;
+  might be construed as &quot;<tt>TOP AND A SYNCHRONOUS</tt>&quot; or &quot;<tt>TOP AND ASYNCHRONOUS</tt>&quot;
+  or even &quot;<tt>TO PANDA SYNCRHONOUS</tt>&quot;</li>
+  <li><tt>J</tt>'s from the plaintext are converted to <tt>I</tt>'s.</li>
+  <li>To avoid letter frequency issues of normal substitution ciphers, the Playfair
+  cipher converts a message into pairs of letters. A single pair cannot contain a
+  repeating letter, so an &quot;X&quot; will be inserted between them. If the decrypted
+  message contains &quot;<tt>NOXON</tt>&quot;, the original was <strong>probably</strong>
+  &quot;<tt>NOON</tt>.</li>
+  <li>Even if <em>Convert &quot;<tt>.</tt>&quot; to &quot;<tt>STOP</tt>&quot;</em>
+  and <em>Spell out digits</em> are selected, these processes will not be reversed
+  when decrypting. There's simply no good automated way to determine if &quot;<tt>PASTOPEN</tt>&quot;
+  means &quot;<tt>past open</tt>&quot; or &quot;<tt>pa. en</tt>&quot; or if
+  &quot;<tt>FALSEVENT</tt>&quot; should be &quot;<tt>FAL7VENT</tt>&quot; or
+  &quot;<tt>FALSE VENT</tt>&quot;.
+  <li>If the last digraph only includes one letter, a &quot;<tt>Z</tt>&quot; will be
+  appended. If the last &quot;<tt>Z</tt>&quot; doesn't make sense, just drop it.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

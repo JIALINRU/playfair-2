@@ -1,0 +1,17 @@
+{
+  "name": "Playfair Cipher",
+  "description": "Simple tool for encrypting and decrypting using the Playfair Cipher",
+  "version": "0.1",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "icons": {"16": "playfair-16.png", "128": "playfair-128.png"},
+  "offline_enabled": true,
+  "permissions": [
+    "storage"
+  ],
+  "key": "mkjifhddcalfncnipnbbfgfgcfjpipfe"
+}

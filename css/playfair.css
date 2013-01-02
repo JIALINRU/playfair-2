@@ -1,0 +1,16 @@
+#squareid {
+  font: 24px menlo,"courier new",monospace;
+}
+
+#squareid > tr > td {
+  padding: 8px;
+}
+
+#helpbox {
+  height: 340px;
+  scroll: auto;
+}
+
+#message {
+  font: 16px meno,"courier new",monospace
+}
