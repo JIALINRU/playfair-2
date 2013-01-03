@@ -12,5 +12,6 @@
 }
 
 #message {
-  font: 16px meno,"courier new",monospace
+  font: 14px meno,"courier new",monospace;
+  width: 85%;
 }
