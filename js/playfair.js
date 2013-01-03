@@ -28,6 +28,19 @@ var Playfair = function() {
     return this_key;
   };
 
+  /* Normalize a message in preparation for encryption.
+   * 
+   * 1) Optionally replace periods with STOP
+   * 2) Optionally replace digits with a spelled form
+   * 3) Convert the message to upper-case
+   * 4) Replace J with I
+   * 5) Remove all non-alpha characters remaining
+   * 6) Build a set of digraphs according to the rules of
+   *    the Playfair cipher
+   * No digraph may have the same letter. If this is going
+   * to be the case, pads the doubling with an X, thereby
+   * moving the doubled letter to the next digraph.
+   */
   this.normalize_message = function(message, doStop, spellNumbers) {
     var nmsg = message;
     if (doStop) nmsg = nmsg.replace(/\./g,'STOP');
@@ -52,7 +65,9 @@ var Playfair = function() {
       // Now, check to see if the next letter is the same
       // as this letter. If so, we add an X and push the
       // stuff down the line
-      if (nmsg[k + 1] == nmsg[k]) {
+      if (nmsg[k + 1] === nmsg[k] && nmsg[k] === 'X') {
+        nmsg = nmsg.substring(0, k + 1) + 'Z' + nmsg.substring(k + 1);
+      else if (nmsg[k + 1] === nmsg[k]) {
         nmsg = nmsg.substring(0, k + 1) + 'X' + nmsg.substring(k + 1);
       }
 
@@ -63,6 +78,11 @@ var Playfair = function() {
     this.digraphs = result;
   };
 
+  /* Decrypts the digraphs using the square provided
+   * This looks almost identical to encrypting, except for
+   * columns and rows - we move backward instead of forward.
+   * The wrapping is a little goofier as well.
+   */
   this.decrypt = function() {
     var decrypted_msg = '';
 
@@ -72,16 +92,15 @@ var Playfair = function() {
       // for each letter
       ci = this.locate_letter(this.digraphs[k][0]);
       cj = this.locate_letter(this.digraphs[k][1]);
-      console.info(this.digraphs[k][0] + " ci: " + ci.i + ci.j);
-      console.info(this.digraphs[k][1] + " cj: " + cj.i + cj.j);
 
       // If the rows are the same, take the next letter
       // to the right for each
       var li, lj;
-      if (ci.i == cj.i) {
+      if (ci.i === cj.i) {
+        // Move one column to the left if they're on the same row
         li = this.square[ci.i][(ci.j - 1 >= 0 ? ci.j - 1 : 5 + (ci.j - 1)) % 5];
         lj = this.square[cj.i][(cj.j - 1 >= 0 ? cj.j - 1 : 5 + (cj.j - 1)) % 5];
-      } else if (ci.j == cj.j) {
+      } else if (ci.j === cj.j) {
         // Move one row down if they're on the same column
         li = this.square[(ci.i - 1 >= 0 ? ci.i - 1 : 5 + (ci.i - 1)) % 5][ci.j];
         lj = this.square[(cj.i - 1 >= 0 ? cj.i - 1 : 5 + (cj.i - 1)) % 5][cj.j];
@@ -96,6 +115,17 @@ var Playfair = function() {
     return decrypted_msg;
   };
   
+  /* Encrypts the digraphs using the Playfair method.
+   * If the two letters in the digraph are on the same
+   * row, each letter is replaced with the letter to its
+   * right, wrapping around if necessary.
+   * If they're in the same column, replace each letter
+   * with the letter beneath, wrapping if necessary.
+   * Otherwise, take the opposite corners of the box
+   * drawn around the two letters, row major (take the
+   * letter on the same row as the first letter first,
+   * then the letter on the same row as the second letter.)
+   */
   this.encrypt = function() {
     var encrypted_msg = '';
 
@@ -105,16 +135,15 @@ var Playfair = function() {
       // for each letter
       ci = this.locate_letter(this.digraphs[k][0]);
       cj = this.locate_letter(this.digraphs[k][1]);
-      console.info(this.digraphs[k][0] + " ci: " + ci.i + ci.j);
-      console.info(this.digraphs[k][1] + " cj: " + cj.i + cj.j);
 
       // If the rows are the same, take the next letter
       // to the right for each
       var li, lj;
-      if (ci.i == cj.i) {
+      if (ci.i === cj.i) {
+        // Move one column to the right if they're on the same row
         li = this.square[ci.i][(ci.j + 1) % 5];
         lj = this.square[cj.i][(cj.j + 1) % 5];
-      } else if (ci.j == cj.j) {
+      } else if (ci.j === cj.j) {
         // Move one row down if they're on the same column
         li = this.square[(ci.i + 1) % 5][ci.j];
         lj = this.square[(cj.i + 1) % 5][cj.j];
@@ -154,24 +183,31 @@ var Playfair = function() {
       this.square[coor(counter).i][coor(counter).j] = my_alphabet.charAt(k);
       counter++;
     }
-
-    console.info("The square is : " + this.square);
   };
 
+  /* Turn a number in the range 0-24 to a (row, column)
+   * tuple.
+   */
   var coor = function(k) {
     return {i: Math.floor(k / 5), j: k % 5};
   };
 
+  /* Return the location of a letter on the
+   * square.
+   */
   this.locate_letter = function(l) {
     for (var k = 0; k < 25; k++) {
       var c = coor(k);
-      if (this.square[c.i][c.j] == l) {
+      if (this.square[c.i][c.j] === l) {
         return c;
       }
     }
   };
 };
 
+/* Utility function to render the Polybius square
+ * as a table.
+ */
 function render_square(square) {
   $('#squareid').empty();
   for (var i = 0; i < square.length; i++) {
@@ -186,6 +222,7 @@ function render_square(square) {
 
 var p;
 $(document).ready(function() {
+  // Handle tab clicking
   $('#tabs a').click(function(e) {
     e.preventDefault();
     $(this).tab('show');
@@ -195,19 +232,20 @@ $(document).ready(function() {
   var reduced_key = p.reduce_key('');
   p.gen_polybius('');
   render_square(p.square);
+  // When they enter keystrokes in the Keyphrase box
   $('#inkey').keyup(function() {
     var reduced_key = p.reduce_key(this.value);
-    console.info("Reduced key is: " + reduced_key);
     p.gen_polybius(reduced_key);
-    console.info("Polybius square is: " + p.square);
     render_square(p.square);
   });
 
+  // When they click the Encrypt button
   $('#encrypt').click(function() {
     p.normalize_message($('#message').val(), $('#dostop').is(':checked'), $('#spellnumbers').is(':checked'));
     $('#message').val(p.encrypt());
   });
 
+  // When they click the decrypt button
   $('#decrypt').click(function() {
     p.normalize_message($('#message').val());
     $('#message').val(p.decrypt());
