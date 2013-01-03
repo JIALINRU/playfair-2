@@ -12,6 +12,15 @@
 }
 
 #message {
-  font: 14px meno,"courier new",monospace;
+  font: 14px menlo,"courier new",monospace;
   width: 85%;
 }
+
+.tt {
+  font-family: menlo,monospace;
+}
+
+#squaretable {
+  text-align: center;
+}
+
