@@ -67,7 +67,7 @@ var Playfair = function() {
       // stuff down the line
       if (nmsg[k + 1] === nmsg[k] && nmsg[k] === 'X') {
         nmsg = nmsg.substring(0, k + 1) + 'Z' + nmsg.substring(k + 1);
-      else if (nmsg[k + 1] === nmsg[k]) {
+      } else if (nmsg[k + 1] === nmsg[k]) {
         nmsg = nmsg.substring(0, k + 1) + 'X' + nmsg.substring(k + 1);
       }
 
